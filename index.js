@@ -96,9 +96,7 @@ app.patch("/posts/:id", (request, response) => {
     response.json(post);
 })
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-
-// http://localhost:3001/posts/1 
