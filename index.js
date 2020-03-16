@@ -13,23 +13,52 @@ let posts = [
         "content": "Hi my name is Simone!",
         "date": "Mon, 02 Mar 2020 16:15:30 GMT",
         "id": 1,
-        "karmaTotal": 1
+        "karmaTotal": 1,
+        "comments": [
+            {
+                "commentContent": "Comment number 1",
+                "commentKarma": 0,
+                "commentDate": "Mon, 02 Mar 2020 16:15:30 GMT",
+                "id": 1
+            },
+            {
+                "commentContent": "Comment number 1.5",
+                "commentKarma": 0,
+                "commentDate": "Mon, 02 Mar 2020 16:15:30 GMT",
+                "id": 2
+            }
+        ]
     },
     {
         "title": "Title 2",
         "content": "Hi my name is Carla!",
         "date": "Tue, 03 Mar 2020 19:04:42 GMT",
         "id": 2,
-        "karmaTotal": 1
+        "karmaTotal": 1,
+        "comments": [
+            {
+                "commentContent": "Comment number 2",
+                "commentKarma": 0,
+                "commentDate": "Mon, 02 Mar 2020 16:15:30 GMT",
+                "id": 1
+            },
+            {
+                "commentContent": "Comment number 2.5",
+                "commentKarma": 0,
+                "commentDate": "Mon, 02 Mar 2020 16:15:30 GMT",
+                "id": 2
+            }
+        ]
     },
     {
         "title": "Title 3",
         "content": "Hi my name is Mirco!",
         "date": "Tue, 03 Mar 2020 19:05:32 GMT",
         "id": 3,
-        "karmaTotal": 1
+        "karmaTotal": 1,
+        "comments": []
     }
-]
+];
 
 app.get("/", (request, response) => {
     response.send("<h1>Hello World!</h1>");
@@ -48,13 +77,6 @@ app.get("/posts/:id", (request, response) => {
     } else {
         response.status(404).end();
     }
-});
-
-app.delete("/posts/:id", (request, response) => {
-    const id = Number(request.params.id);
-    posts = posts.filter(post => post.id !== id);
-
-    response.status(204).end();
 });
 
 const generateId = () => {
@@ -77,6 +99,7 @@ app.post("/posts", (request, response) => {
         title: body.title,
         content: body.content,
         karmaTotal: body.karmaTotal,
+        comment: [],
         date: new Date(),
         id: generateId()
     };
@@ -86,13 +109,42 @@ app.post("/posts", (request, response) => {
     response.json(post);
 });
 
+app.post("/posts/comment/:id", (request, response) => {
+    const id = Number(request.params.id);
+    const post = posts.find(post => post.id === id);
+    const body = request.body;
+
+    console.log(post);
+
+    if (!body.commentContent) {
+        return response.status(400).json({
+            error: "content missing"
+        });
+    };
+
+    
+    const comment = {
+        commentContent: body.commentContent,
+        commentKarma: body.commentKarma,
+        commentDate: new Date(),
+        id: generateId()
+    };
+
+
+    post.comments = post.comments.concat(comment);
+
+    response.json(posts);
+    console.log(posts);
+
+}) 
+
 app.patch("/posts/:id", (request, response) => {
     const id = Number(request.params.id);
     const post = posts.find(post => post.id === id);
 
     const body = request.body;
 
-    post.karmaTotal = body.karmaTotal;
+    post.karmaTotal = body.karmaTotal
 
     response.json(post);
 })
