@@ -99,7 +99,7 @@ app.post("/posts", (request, response) => {
         title: body.title,
         content: body.content,
         karmaTotal: body.karmaTotal,
-        comment: [],
+        comments: [],
         date: new Date(),
         id: generateId()
     };
@@ -114,8 +114,6 @@ app.post("/posts/comment/:id", (request, response) => {
     const post = posts.find(post => post.id === id);
     const body = request.body;
 
-    console.log(post);
-
     if (!body.commentContent) {
         return response.status(400).json({
             error: "content missing"
@@ -127,7 +125,7 @@ app.post("/posts/comment/:id", (request, response) => {
         commentContent: body.commentContent,
         commentKarma: body.commentKarma,
         commentDate: new Date(),
-        id: generateId()
+        id: Math.floor(Math.random() * 1000000)
     };
 
 
