@@ -99,7 +99,7 @@ app.post("/posts", (request, response) => {
         title: body.title,
         content: body.content,
         karmaTotal: body.karmaTotal,
-        comments: [],
+        comments: body.comments,
         date: new Date(),
         id: generateId()
     };
@@ -134,7 +134,7 @@ app.post("/posts/comment/:id", (request, response) => {
     response.json(posts);
     console.log(posts);
 
-}) 
+}); 
 
 app.patch("/posts/:id", (request, response) => {
     const id = Number(request.params.id);
@@ -142,7 +142,21 @@ app.patch("/posts/:id", (request, response) => {
 
     const body = request.body;
 
-    post.karmaTotal = body.karmaTotal
+    post.karmaTotal = body.karmaTotal;
+
+    response.json(post);
+});
+
+app.patch("/posts/:id/comment/:id2", (request, response) => {
+    const id = Number(request.params.id);
+    const id2 = Number(request.params.id2);
+
+    const post = posts.find(post => post.id === id);
+    const comment = post.comments.find(com => com.id === id2);
+
+    const body = request.body;
+
+    comment.commentKarma = body.commentKarma;
 
     response.json(post);
 })
